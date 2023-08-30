@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract RecordExpenseHandler is Upgradeable {
+contract RecordExpenseHandler is Upgradeable {
     event ExpenseRecorded(
         address indexed payer,
         address[] friends,

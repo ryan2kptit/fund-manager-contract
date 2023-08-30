@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract SettleDebtHandler is Upgradeable {
+contract SettleDebtHandler is Upgradeable {
     event DebtsSettled(
         address indexed payer,
         address indexed friend,

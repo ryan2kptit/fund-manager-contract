@@ -2,23 +2,23 @@ import { ethers, upgrades } from "hardhat";
 
 async function main() {
   // Step 1: Deploy proxy contract
-  const proxy_factory = await ethers.getContractFactory(
+  const Proxy = await ethers.getContractFactory(
     "FundManagerUpgradeable"
   );
-  const proxy_contract = await upgrades.deployProxy(proxy_factory);
-  await proxy_contract.deployed();
+  const proxy = await upgrades.deployProxy(Proxy);
+  await proxy.deployed();
 
-  console.log(`Proxy contract deployed at ${proxy_contract.address}`);
+  console.log(`Proxy contract deployed at ${proxy.address}`);
 
   // Step 2: Deploy marketplace impl
   const FundManagerImpl = await ethers.getContractFactory("FundManagerImpl");
   let fundManagerImpl = await FundManagerImpl.deploy();
 
-  console.log(`Fund Manager contract deployed at ${fundManagerImpl}`);
+  console.log(`Fund Manager contract deployed at ${fundManagerImpl.address}`);
 
   // fundManagerImpl = FundManagerImpl.attach(proxy_contract.address);
   // Step 3: Set marketplace
-  let setting = await proxy_contract._upgradeTo(fundManagerImpl);
+  let setting = await proxy.upgradeTo(fundManagerImpl.address);
   await setting.wait();
 
   // console.log(`Fund impl set to ${await proxy_contract.implementation()}`);
