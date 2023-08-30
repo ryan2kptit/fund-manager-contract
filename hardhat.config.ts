@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.19",
+  solidity: "0.8.9",
   networks: {
     develop: {
       url: "http://127.0.0.1:8545/",

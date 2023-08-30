@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract RecordExpenseHandler is Upgradeable {
+contract RecordExpenseHandler is Upgradeable {
     event ExpenseRecorded(
         address indexed payer,
         address[] friends,

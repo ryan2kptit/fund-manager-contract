@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract SettleDebtHandler is Upgradeable {
+contract SettleDebtHandler is Upgradeable {
     event DebtsSettled(
         address indexed payer,
         address indexed friend,
