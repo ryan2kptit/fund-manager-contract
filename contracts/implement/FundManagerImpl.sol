@@ -2,30 +2,23 @@
 pragma solidity ^0.8.9;
 
 import "./handlers/RecordExpenseHandler.sol";
-import "./handlers/SettleDebtsHandler.sol";
+import "./handlers/SettleDebtHandler.sol";
 
-contract FundManagerImpl is RecordExpense, SettleDebt {
-    /**
-        @param friends: list user's address
-        @param amounts: list user'amount follow friends's order
-     */
-    function recordExpense(
-        address[] memory friends,
-        uint256[] memory amounts
-    ) external {
+contract FundManagerImpl is Upgradeable {
+    
+    function handleRecordExpense(address[] memory, uint256[] memory) external {
+        // check condition
 
-        // logic
-        handleRecordExpense(friends, amounts);
+        address impl = recordExpenesHandlerAddress;
+        delegateCall(impl);
     }
 
+    
+    function settelDebt(address) external {
+        // check condition
 
-    /**
-        @param friend: user's address
-     */
-    function settelDebt(address friend) external {
-        //  logic
-
-        handleSettleDebts(friend);
+        address impl = settleDebtHandlerAddress;
+        delegateCall(impl);
     }
 
     function getDebt(address friend) external view returns (int256) {
@@ -49,5 +42,45 @@ contract FundManagerImpl is RecordExpense, SettleDebt {
         address debtor
     ) internal view returns (address[] memory) {
         return creditors[debtor];
+    }
+
+    /**
+     * @dev setRecordExpenesHandlerAddress
+     * ** Params **
+     * @param _addr address
+     */
+    function setRecordExpenesHandlerAddress(
+        address _addr
+    ) public {
+        recordExpenesHandlerAddress = _addr;
+    }
+
+    /**
+     * @dev setCancelHandlerAddress
+     * ** Params **
+     * @param _addr address
+     */
+    function setSettleDebtHandlerAddress(
+        address _addr
+    ) public {
+        settleDebtHandlerAddress = _addr;
+    }
+
+    function delegateCall(address _impl) internal {
+        assembly {
+            let ptr := mload(0x40)
+            calldatacopy(ptr, 0, calldatasize())
+            let result := delegatecall(gas(), _impl, ptr, calldatasize(), 0, 0)
+            let size := returndatasize()
+            returndatacopy(ptr, 0, size)
+
+            switch result
+            case 0 {
+                revert(ptr, size)
+            }
+            default {
+                return(ptr, size)
+            }
+        }
     }
 }

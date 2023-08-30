@@ -3,13 +3,16 @@ pragma solidity ^0.8.9;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract SettleDebt is Upgradeable {
+abstract contract SettleDebtHandler is Upgradeable {
     event DebtsSettled(
         address indexed payer,
         address indexed friend,
         uint256 amount
     );
 
+    /**
+     * @param _friend: user's address
+     */
     function handleSettleDebts(address _friend) internal {
         require(balances[_friend] < 0, "No debt to settle");
         int256 debt = balances[_friend] * -1;

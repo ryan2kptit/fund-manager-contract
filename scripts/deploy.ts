@@ -10,17 +10,30 @@ async function main() {
 
   console.log(`Proxy contract deployed at ${proxy_contract.address}`);
 
-  // Step 2: Deploy marketplace handler
-  const fund_factory = await ethers.getContractFactory("FundManagerImpl");
-  const fund_contract = await upgrades.deployImplementation(fund_factory);
+  // Step 2: Deploy marketplace impl
+  const FundManagerImpl = await ethers.getContractFactory("FundManagerImpl");
+  let fundManagerImpl = await FundManagerImpl.deploy();
 
-  console.log(`Fund Manager contract deployed at ${fund_contract}`);
+  console.log(`Fund Manager contract deployed at ${fundManagerImpl}`);
 
+  // fundManagerImpl = FundManagerImpl.attach(proxy_contract.address);
   // Step 3: Set marketplace
-  let setting = await proxy_contract.setFundManagerImpl(fund_contract);
+  let setting = await proxy_contract._upgradeTo(fundManagerImpl);
   await setting.wait();
 
-  console.log(`Fund impl set to ${await proxy_contract.implementation()}`);
+  // console.log(`Fund impl set to ${await proxy_contract.implementation()}`);
+
+  const RecordExpenseHandler = await ethers.getContractFactory("RecordExpenseHandler");
+  const recordExpenseHandler = await RecordExpenseHandler.deploy();
+  console.log(`RecordExpenseHandler: ${recordExpenseHandler.address}`);
+
+  const SettleDebtHandler = await ethers.getContractFactory("SettleDebtHandler");
+  const settleDebtHandler = await SettleDebtHandler.deploy();
+  console.log(`SettleDebtHandler: ${settleDebtHandler.address}`);
+
+  await fundManagerImpl.setRecordExpenesHandlerAddress(recordExpenseHandler.address);
+  await fundManagerImpl.setSettleDebtHandlerAddress(settleDebtHandler.address);
+  
 }
 
 // We recommend this pattern to be able to use async/await everywhere

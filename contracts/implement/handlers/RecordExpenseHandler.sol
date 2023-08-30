@@ -3,13 +3,17 @@ pragma solidity ^0.8.9;
 
 import "../../common/Upgradeable.sol";
 
-abstract contract RecordExpense is Upgradeable {
+abstract contract RecordExpenseHandler is Upgradeable {
     event ExpenseRecorded(
         address indexed payer,
         address[] friends,
-        uint256 totalAmount
+        uint256 totalAmount 
     );
 
+    /**
+     * @param _friends: list user's address
+     * @param _amounts: list user'amount follow friends's order
+     */
     function handleRecordExpense(
         address[] memory _friends,
         uint256[] memory _amounts
@@ -32,7 +36,6 @@ abstract contract RecordExpense is Upgradeable {
         }
 
         balances[msg.sender] += int256(totalExpense);
-
         emit ExpenseRecorded(msg.sender, _friends, totalExpense);
     }
 }
